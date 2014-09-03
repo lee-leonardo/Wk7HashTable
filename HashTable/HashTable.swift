@@ -46,6 +46,11 @@ class HashTable {
         bucket.nextHash = self.hashArray[index]
         self.hashArray[index] = bucket
         self.count++
+        println("Object Set Count: \(count)")
+        
+        if Float(count) / Float(size) >= 0.7 {
+            self.hashArray = increaseCapacity()
+        }
     }
     
     func removeObjectForKey(key: String) {
@@ -87,5 +92,21 @@ class HashTable {
             }
         }
         return nil
+    }
+    
+    func increaseCapacity() -> [Bucket] {
+        var temp = [Bucket](count: (self.size * 2), repeatedValue: Bucket())
+        
+        for index in 0..<temp.count {
+            if index < self.hashArray.count {
+                temp[index] = self.hashArray[index]
+                if index - 1 > 0 {
+                    temp[index - 1].nextHash = temp[index]
+                }
+            } else {
+                temp[index] = Bucket()
+            }
+        }
+        return temp
     }
 }
